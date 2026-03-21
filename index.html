@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sudhanshu H — CV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #07050f;
+      --ink: #ede8f5;
+      --muted: #7a6e90;
+      --accent: #b07fff;
+      --accent-dim: rgba(176,127,255,0.12);
+      --accent-glow: rgba(176,127,255,0.22);
+      --border: rgba(176,127,255,0.10);
+      --serif: 'Lora', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── Starfield ── */
+    #stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Nebula blobs ── */
+    .nebula {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .nebula-1 {
+      width: 600px; height: 500px;
+      top: -100px; left: -150px;
+      background: radial-gradient(ellipse, rgba(120,40,200,0.18) 0%, transparent 70%);
+    }
+    .nebula-2 {
+      width: 500px; height: 400px;
+      top: 30%; right: -120px;
+      background: radial-gradient(ellipse, rgba(80,20,160,0.14) 0%, transparent 70%);
+    }
+    .nebula-3 {
+      width: 700px; height: 400px;
+      bottom: 5%; left: 10%;
+      background: radial-gradient(ellipse, rgba(160,60,255,0.10) 0%, transparent 70%);
+    }
+
+    /* ── Purple Earth glow at bottom ── */
+    .earth-glow {
+      position: fixed;
+      bottom: -380px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px; height: 1000px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 45% 40%,
+        rgba(100,30,200,0.45) 0%,
+        rgba(60,10,130,0.25) 35%,
+        rgba(20,5,50,0.15) 60%,
+        transparent 75%);
+      filter: blur(50px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .earth-rim {
+      position: fixed;
+      bottom: -420px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1100px; height: 1100px;
+      border-radius: 50%;
+      border: 1px solid rgba(160,80,255,0.10);
+      box-shadow:
+        0 0 100px 16px rgba(130,50,255,0.07),
+        inset 0 0 80px rgba(100,30,200,0.05);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 2rem 8rem;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 5.5rem 0 3.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards;
+    }
+
+    .name {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(130deg, #ede8f5 25%, #c89fff 65%, #8b3fff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .contact-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .contact-row a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .contact-row a:hover { border-bottom-color: var(--accent); color: #d0aaff; }
+    .contact-row span::before { content: "· "; color: var(--border); }
+    .contact-row span:first-child::before { content: ""; }
+
+    /* ── Sections ── */
+    section {
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+    }
+    section:nth-child(1) { animation-delay: 0.15s; }
+    section:nth-child(2) { animation-delay: 0.25s; }
+    section:nth-child(3) { animation-delay: 0.35s; }
+    section:nth-child(4) { animation-delay: 0.45s; }
+    section:nth-child(5) { animation-delay: 0.55s; }
+    section:nth-child(6) { animation-delay: 0.65s; }
+
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .section-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(176,127,255,0.25), transparent);
+    }
+
+    .about-text { font-size: 1rem; color: #a89ec0; max-width: 620px; }
+
+    /* ── Entries ── */
+    .entries { display: flex; flex-direction: column; gap: 1.2rem; }
+
+    .entry {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.2rem 1rem;
+      padding: 1.3rem 1.4rem;
+      background: rgba(176,127,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .entry:hover {
+      background: rgba(176,127,255,0.08);
+      border-color: rgba(176,127,255,0.25);
+      box-shadow: 0 0 24px rgba(140,60,255,0.08);
+    }
+
+    .entry-title {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.02rem;
+      color: var(--ink);
+      grid-column: 1;
+    }
+    .entry-sub { font-size: 0.875rem; color: var(--muted); grid-column: 1; }
+    .entry-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+      text-align: right;
+      grid-column: 2;
+      grid-row: 1;
+      padding-top: 0.3rem;
+    }
+    .entry-desc {
+      font-size: 0.9rem;
+      color: #8a7ea8;
+      grid-column: 1 / -1;
+      margin-top: 0.5rem;
+      padding-left: 0.9rem;
+      border-left: 2px solid rgba(176,127,255,0.22);
+    }
+    .entry-desc ul { padding-left: 1rem; }
+    .entry-desc li { margin-bottom: 0.2rem; }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1.2rem;
+    }
+    .skill-group-name {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag {
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.8rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 3px;
+      border: 1px solid rgba(176,127,255,0.16);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .tag:hover {
+      background: rgba(176,127,255,0.2);
+      box-shadow: 0 0 10px rgba(160,80,255,0.15);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 540px) {
+      .entry { grid-template-columns: 1fr; }
+      .entry-date { grid-column: 1; grid-row: auto; text-align: left; }
+      .contact-row { flex-direction: column; gap: 0.3rem; }
+      .contact-row span::before { content: ""; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+<div class="earth-glow"></div>
+<div class="earth-rim"></div>
+
+<div class="page">
+
+  <header>
+    <h1 class="name">Sudhanshu H</h1>
+    <p class="tagline">Bachelor of Engineering in Electronics and Communication &nbsp;·&nbsp; R. V. College of Engineering</p>
+    <div class="contact-row">
+      <span>📍 Bangalore, India</span>
+      <span><a href="mailto:sudhanshu.355@gmail.com">Gmail</a></span>
+      <span><a href="https://www.linkedin.com/in/sudhanshu-h/" target="_blank">LinkedIn</a></span>
+      <span><a href="https://github.com/SteelMystic525" target="_blank">GitHub</a></span>
+    </div>
+  </header>
+
+  <section>
+    <p class="section-label">About</p>
+    <p class="about-text">
+      Third year UG(ECE) student at RVCE, Bangalore, interested in digital design, computer architecture and embedded systems. 
+      I have been tinkering around FPGA and different microcontrollers and 
+      programming languages trying to build things I get curious about and 
+      have also been an technical team member of Astra Robotics building bots and rovers. 
+      I have worked on digital design & verification as a Visiting Student Professional  (VSP) in Raman Research Institute.    </p>
+  </section>
+
+  <section>
+    <p class="section-label">Education</p>
+    <div class="entries">
+      <div class="entry">
+        <div class="entry-title">Bachelor of Engineering — Electronics and Communication</div>
+        <div class="entry-sub">R. V. College of Engineering, Bangalore</div>
+        <div class="entry-date">2023 – 2027</div>
+        <div class="entry-desc">GPA: 9.2/10 &nbsp;·&nbsp; Relevant coursework: Computer Architecture, Digital Electronics, Embedded Systems Design, Digital VLSI Design</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Experience</p>
+    <div class="entries">
+      <div class="entry">
+        <div class="entry-title">RTL Design Intern (VSP)</div>
+        <div class="entry-sub">Raman Research Institute · Full-time</div>
+        <div class="entry-date">Aug – Dec 2025</div>
+        <div class="entry-desc">
+          <ul>
+            <li>Built a real-time phase accumulator on FPGA, achieving deterministic pulse-to-bin mapping at 100–200 MHz</li>
+            <li>Optimized memory using ROM + dual-port BRAM, reducing resource usage while sustaining high-throughput streaming</li>
+            <li>Designed a fully pipelined datapath, enabling continuous processing with near-zero idle cycles and low latency</li>
+          </ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="entry-title">Rover Lead</div>
+        <div class="entry-sub">Astra Robotics · Part-time</div>
+        <div class="entry-date">Jan 2026 – current</div>
+        <div class="entry-desc">
+          <ul>
+            <li>Led a team of 20+ students in designing and building a Mars rover for the University Rover Challenge.</li>
+            <li>Managed the project timeline and coordinated with different technical teams and 
+              contributed to the development of the rover's autonomous navigation system.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Projects</p>
+    <div class="entries">
+      <div class="entry">
+        <div class="entry-title">Multiport Memory Arbiter with QoS
+          <a href="https://github.com/SteelMystic525/mpma" target="_blank" style="font-family:var(--sans);font-size:0.75rem;font-weight:400;color:var(--accent);text-decoration:none;margin-left:0.5rem;">↗ GitHub</a>
+        </div>
+        <div class="entry-sub">Python · Verilog · FPGA</div>
+        <div class="entry-date">2025</div>
+        <div class="entry-desc">A hardware design project for implementing a multiport memory arbiter with Quality of Service in Verilog.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-title">Streaming Image Processing Accelerator
+          <a href="https://github.com/SteelMystic525/sip-accelerator" target="_blank" style="font-family:var(--sans);font-size:0.75rem;font-weight:400;color:var(--accent);text-decoration:none;margin-left:0.5rem;">↗ GitHub</a>
+        </div>
+        <div class="entry-sub">Python · SystemVerilog · FPGA</div>
+        <div class="entry-date">2026</div>
+        <div class="entry-desc">
+          <ul>
+            <li>Designed a streaming image accelerator using line buffers and sliding window architecture for real-time convolution</li>
+            <li>Implemented parallel edge detection filters (Sobel, Prewitt, Laplacian) with a fully pipelined datapath</li>
+            <li>Achieved low-latency, high-throughput processing by eliminating full-frame memory and enabling continuous pixel streaming</li>
+
+          </ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="entry-title">RISCV32I CPU Design
+          <a href="#" style="font-family:var(--sans);font-size:0.75rem;font-weight:400;color:var(--accent);text-decoration:none;margin-left:0.5rem;">↗ Live</a>
+        </div>
+        <div class="entry-sub">SystemVerilog · FPGA</div>
+        <div class="entry-date">2026</div>
+        <div class="entry-desc">Designed and implemented a RISCV32I CPU in SystemVerilog, targeting tape-out.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Skills</p>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-name">Languages</div>
+        <div class="skill-tags">
+          <span class="tag">Python</span><span class="tag">SystemVerilog</span>
+          <span class="tag">Verilog</span><span class="tag">C</span><span class="tag">Embedded C</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Tools & Platforms</div>
+        <div class="skill-tags">
+          <span class="tag">Vivado</span><span class="tag">Cadence</span>
+          <span class="tag">Modelsim</span><span class="tag">MATLAB</span><span class="tag">Quartus</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Concepts</div>
+        <div class="skill-tags">
+          <span class="tag">ROS2</span><span class="tag">OOP</span>
+          <span class="tag">Digital Design</span><span class="tag">ML Basics</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Achievements & Activities</p>
+    <div class="entries">
+      <div class="entry">
+        <div class="entry-title">Runner Up — Silicon Sprint</div>
+        <div class="entry-date">2026</div>
+        <div class="entry-desc">Systolic Array Accelerator Implementation in 24 hours.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-title">Pre Finalist- UniSys</div>
+        <div class="entry-date">2025</div>
+        <div class="entry-desc">Built autonomous logistics system using ROS2 and computer vision for hospital applications.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-title">Stage II- eyantra(IITB) X2</div>
+        <div class="entry-date">2025,2026 </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Sudhanshu H</span>
+    <span>Last updated: March 2026</span>
+  </footer>
+
+</div>
+
+<script>
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [], W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    const count = Math.floor((W * H) / 2800);
+    for (let i = 0; i < count; i++) {
+      const type = Math.random();
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.15,
+        alpha: Math.random() * 0.8 + 0.15,
+        speed: Math.random() * 0.003 + 0.001,
+        phase: Math.random() * Math.PI * 2,
+        // mix of white, lavender, and faint purple stars
+        color: type < 0.5
+          ? [240, 235, 255]   // cool white
+          : type < 0.8
+          ? [210, 180, 255]   // lavender
+          : [180, 120, 255]   // purple tint
+      });
+    }
+  }
+
+  let tick = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    tick += 0.012;
+    for (const s of stars) {
+      const a = s.alpha * (0.5 + 0.5 * Math.sin(tick * s.speed * 80 + s.phase));
+      const [r, g, b] = s.color;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize(); initStars(); draw();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+</script>
+</body>
+</html>
